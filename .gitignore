@@ -1,0 +1,16 @@
+﻿# Ignore compiled binaries
+*.exe
+*.o
+*.out
+
+# Ignore temporary files
+tempCodeRunnerFile.c
+*.log
+
+# Ignore editor and system folders
+.vscode/
+.idea/
+
+# Ignore build directories
+build/
+bin/
