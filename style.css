@@ -1,0 +1,337 @@
+/* --- 0. Variables and Base Reset --- */
+:root {
+    /* Color Palette */
+    --primary-purple: #7c3aed; /* Stronger purple */
+    --accent-pink: #f472b6;  /* Brighter pink for active mode */
+    --background-main: #fcfcfc; /* Cleaner white background */
+    --background-light: #f3f4f6; 
+    --text-color-dark: #1f2937;
+    --text-color-light: #ffffff;
+    --console-bg: #111827; /* Near black console */
+    --console-text: #60a5fa; /* Blue console text */
+    
+    /* Layout and Spacing */
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --border-radius-base: 8px;
+    --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--background-main);
+    color: var(--text-color-dark);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* --- 1. Main App Layout --- */
+#app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- 2. Sidebar (Left Panel) --- */
+.sidebar {
+    width: 320px; /* Slightly narrower for a cleaner look */
+    min-width: 320px;
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--accent-pink) 100%); /* Smoother diagonal gradient */
+    color: var(--text-color-light);
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: var(--spacing-lg);
+}
+
+.logo-text {
+    font-size: 1.6rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+}
+
+/* Tab Controls */
+.tab-controls {
+    display: flex;
+    background: rgba(0, 0, 0, 0.15);
+    margin: 0 var(--spacing-lg);
+    border-radius: var(--border-radius-base);
+}
+
+.tab-btn {
+    flex-grow: 1;
+    padding: 10px 15px;
+    border: none;
+    background: transparent;
+    color: var(--text-color-light);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: var(--border-radius-base);
+}
+
+.tab-btn.active {
+    background: white;
+    color: var(--primary-purple); /* Primary color for contrast */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Tab Content */
+.tab-content {
+    padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+}
+
+.tab-content h3 {
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-color-light);
+    opacity: 0.9;
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+}
+
+.stats-panel {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 4px;
+}
+.stats-panel p { margin: 5px 0; font-size: 0.9rem; }
+.stats-panel span { font-weight: 700; }
+
+/* Route Finder Panel (White card look) */
+.route-finder-panel {
+    background: white;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-base);
+    color: var(--text-color-dark);
+    box-shadow: var(--shadow-md);
+    border-left: 5px solid var(--accent-pink);
+}
+
+.route-header {
+    color: #10b981;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.route-finder-panel label {
+    display: block;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+.route-finder-panel select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    background: var(--background-light);
+}
+
+/* --- 3. Main Content (Visualization Area) --- */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-lg);
+}
+
+.visualization-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 5px;
+}
+
+.instruction {
+    font-weight: 600;
+    color: var(--text-color-dark);
+    margin-top: 0;
+    padding: 0 5px;
+    font-size: 0.9rem;
+}
+
+.indicator {
+    padding: 5px 12px;
+    background: var(--text-color-light);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin-left: 10px;
+    box-shadow: var(--shadow-md);
+}
+
+/* Canvas Area */
+.canvas-container {
+    flex-grow: 1;
+    background: var(--text-color-light);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    position: relative;
+    /* Clean grid pattern */
+    background-image: linear-gradient(to right, #f0f0f0 1px, transparent 1px),
+                      linear-gradient(to bottom, #f0f0f0 1px, transparent 1px);
+    background-size: 30px 30px; /* Larger, softer grid */
+}
+
+#graph-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Console Output */
+.output-console {
+    background: var(--console-bg);
+    color: var(--console-text);
+    padding: 10px;
+    margin-top: var(--spacing-md);
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 0.85rem;
+    min-height: 80px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+/* --- 4. Buttons and Inputs --- */
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: var(--spacing-md);
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    width: 100%;
+}
+
+.btn:active {
+    transform: scale(0.99);
+}
+
+/* Action buttons in sidebar */
+.btn-action {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.btn-action:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+/* ACTIVE MODE STYLING (NEW) */
+.btn-action.active-mode {
+    background-color: var(--accent-pink); /* Use a strong accent color */
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-bottom: 3px solid #e11d48; /* Red shade for emphasis */
+}
+
+.btn-action.active-mode:hover {
+    background-color: var(--accent-pink);
+}
+
+.btn-secondary {
+    background-color: var(--text-color-light);
+    color: var(--primary-purple);
+    font-weight: 700;
+}
+.btn-secondary:hover {
+    background-color: #e5e7eb;
+}
+
+.btn-compute {
+    background-color: #10b981; 
+    color: white;
+    font-weight: 700;
+    margin-top: 20px;
+}
+
+.btn-compute:hover {
+    background-color: #059669;
+}
+
+.hidden { display: none !important; }
+
+/* Modal and form styling (simplified) */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content { 
+    background: white;
+    padding: 25px;
+    border-radius: var(--border-radius-base);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+}
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    box-sizing: border-box; 
+}
+.modal-content button {
+    background-color: var(--primary-purple);
+    color: white;
+    padding: 12px 20px;
+    font-weight: 700;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+}
+.modal-content button:hover {
+    background-color: #6d28d9;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

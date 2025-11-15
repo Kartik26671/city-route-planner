@@ -4,6 +4,8 @@
 *.out
 
 # Ignore temporary files
+city_data.txt
+
 tempCodeRunnerFile.c
 *.log
 

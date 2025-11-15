@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Route Planner</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app-container">
+        <!-- LEFT SIDEBAR: Controls & Tabs -->
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <div class="logo-text">
+                    <span class="icon">&#128205;</span>
+                    City Route Planner
+                </div>
+            </header>
+
+            <div class="tab-controls">
+                <button class="tab-btn active" data-tab="build" onclick="showTab('build')">Build Graph</button>
+                <button class="tab-btn" data-tab="find" onclick="showTab('find')">Find Route</button>
+            </div>
+
+            <!-- TAB CONTENT: BUILD GRAPH -->
+            <div id="build-tab" class="tab-content active">
+                <h3>Graph Operations</h3>
+                <div class="button-group">
+                    <!-- NEW MODE BUTTONS -->
+                    <button id="addCity-btn" onclick="setMode('addCity')" class="btn btn-action">Add City</button>
+                    <button id="addRoad-btn" onclick="setMode('addRoad')" class="btn btn-action">Add Road</button>
+                    <button onclick="setMode('none')" class="btn btn-secondary">Clear Selection</button>
+                </div>
+                
+                <h3>Data & Debug</h3>
+                <div class="button-group">
+                    <button onclick="displayGraphData()" class="btn btn-secondary">Adjacency List (Console)</button>
+                    <button onclick="displayMatrixData()" class="btn btn-secondary">Adjacency Matrix (Console)</button>
+                </div>
+
+                <h3>Graph Stats</h3>
+                <div id="stats-panel" class="stats-panel">
+                    <p>Cities: <span id="city-count">0</span></p>
+                    <p>Roads: <span id="road-count">0</span></p>
+                </div>
+            </div>
+
+            <!-- TAB CONTENT: FIND ROUTE (Route Finder Panel) -->
+            <div id="find-tab" class="tab-content hidden">
+                <div class="route-finder-panel">
+                    <div class="route-header">&#9989; Route Finder</div>
+                    
+                    <label for="algorithm-select">Algorithm</label>
+                    <select id="algorithm-select">
+                        <option value="dijkstra">Dijkstra's Algorithm</option>
+                        <option value="bfs">BFS Shortest Path (Fewest Stops)</option>
+                    </select>
+                    
+                    <label for="source-city">Source City</label>
+                    <select id="source-city" onchange="updateRouteSelection('start', this.value)"></select>
+                    
+                    <label for="destination-city">Destination City</label>
+                    <select id="destination-city" onchange="updateRouteSelection('end', this.value)"></select>
+                    
+                    <button onclick="computeRoute()" class="btn btn-compute">Compute Route</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- RIGHT MAIN AREA: Visualization -->
+        <main class="main-content">
+            <div class="visualization-header">
+                <h2>Graph Visualization</h2>
+                <div class="status-indicators">
+                    <span class="indicator">Nodes (<span id="viz-city-count">0</span>)</span>
+                    <span class="indicator">Edges (<span id="viz-road-count">0</span>)</span>
+                </div>
+            </div>
+            <p class="instruction">
+                Click **Add City** then click canvas to place. Click **Add Road** then click two cities.
+            </p>
+            
+            <div class="canvas-container">
+                <canvas id="graph-canvas"></canvas>
+            </div>
+            
+            <pre id="output" class="output-console"></pre>
+        </main>
+    </div>
+
+    <!-- Modal container -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
