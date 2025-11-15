@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "graph.h"
+#include "ui.h" 
 
 City cities[MAX];
 int cityCount = 0;
@@ -18,20 +19,23 @@ int getCityIndex(const char* name) {
 
 /* Add a city */
 void addCity(const char* name) {
-    if (getCityIndex(name) != -1) {
-        printf("City '%s' already exists.\n", name);
-        return;
-    }
     if (cityCount >= MAX) {
-        printf("Cannot add more cities (limit reached).\n");
+        printError("Cannot add more cities. Limit reached.");
         return;
     }
-    strncpy(cities[cityCount].name, name, NAME_LEN-1);
+    // Optional: check for duplicates
+    for (int i = 0; i < cityCount; i++) {
+        if (strcmp(cities[i].name, name) == 0) {
+            printError("City already exists!");
+            return;
+        }
+    }
+    strncpy(cities[cityCount].name, name, NAME_LEN);
     cities[cityCount].name[NAME_LEN-1] = '\0';
-    adjList[cityCount] = NULL;
     cityCount++;
-    printf("City '%s' added successfully.\n", name);
+    printSuccess("City added successfully!");
 }
+
 
 /* Add a two-way road */
 void addRoad(const char* city1, const char* city2, int distance) {
@@ -172,44 +176,44 @@ int getEdgeDistance(int u, int v) {
         if (t->cityIndex == v) return t->distance;
         t = t->next;
     }
-    return -1;
+    return 0;
 }
 
 /* display adjacency matrix */
-void displayAdjacencyMatrix(void) {
-    int n = cityCount;
-    if (n == 0) {
-        printf("Graph is empty.\n");
+void displayAdjacencyMatrix() {
+    if(cityCount == 0) {
+        printf("No cities to display.\n");
         return;
     }
 
-    /* prepare matrix */
-    int matrix[MAX][MAX];
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++)
-            matrix[i][j] = 0;
-
-    for (int i = 0; i < n; i++) {
-        Node* t = adjList[i];
-        while (t) {
-            matrix[i][t->cityIndex] = t->distance;
-            t = t->next;
-        }
+    // Determine column width (at least 8)
+    int colWidth = 8;
+    for(int i = 0; i < cityCount; i++) {
+        int len = strlen(cities[i].name);
+        if(len + 2 > colWidth) colWidth = len + 2; // 2-space padding
     }
 
-    /* print header */
-    printf("\nAdjacency Matrix (0 = no direct road):\n      ");
-    for (int j = 0; j < n; j++) printf("%10s", cities[j].name);
+    printf("\nAdjacency Matrix (0 = no direct road):\n\n");
+
+    // Print header row
+    printf("%-*s", colWidth, ""); // top-left empty
+    for(int i = 0; i < cityCount; i++) {
+        printf("%-*s", colWidth, cities[i].name);
+    }
     printf("\n");
 
-    for (int i = 0; i < n; i++) {
-        printf("%-6s", cities[i].name);
-        for (int j = 0; j < n; j++) {
-            printf("%10d", matrix[i][j]);
+    // Print each row
+    for(int i = 0; i < cityCount; i++) {
+        printf("%-*s", colWidth, cities[i].name); // row label
+        for(int j = 0; j < cityCount; j++) {
+            int d = getEdgeDistance(i, j); // distance (0 if no road)
+            printf("%-*d", colWidth, d);    // left-align numbers to match header
         }
         printf("\n");
     }
 }
+
+
 
 /* graph stats: totalCities, totalRoads (undirected count), avgDistance, mostConnectedIndex */
 void getGraphStats(int* totalCities, int* totalRoads, double* avgDistance, int* mostConnectedIndex) {

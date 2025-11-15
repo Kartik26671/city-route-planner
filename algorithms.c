@@ -2,7 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include "algorithms.h"
+
+#include "graph.h"        
+#include "ui.h"           // <-- for UI output (route header etc.)
+#include "algorithms.h"   
+
 
 #define INF INT_MAX
 
